@@ -247,7 +247,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 
 
 		<div class="col-12">
-			<h2 class="mb-0 text-primary text-center"><strong>Ofertas em destaque</strong></h2>
+			<h2 class="mb-0 text-primary text-center"><strong>Ofertas em destaque1</strong></h2>
 			<div class="divider bg-info"></div>
 			<p class="text-center mb-2 text-primary"><i class="fa fa-caret-down fa-3x mt-n3"></i></p>
 			<div class="d-flex flex-wrap justify-content-start" style="gap: 20px">
