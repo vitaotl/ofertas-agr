@@ -1,7 +1,23 @@
+<style>
+	.border-modal-content {
+    border-radius: 13px 41px 0 0 !important;
+	}
+	.border-modal-header {
+		border-radius: 10px 36px 0 0 !important;
+    border-bottom: none;
+	}
+	.modal-title {
+		color: #FFFFFF;
+	}
+	.bg-orange {
+    background-color: rgb(255, 87, 34);
+	}
+</style>
+
 <div class="modal fade" tabindex="-1" id="modal-offer-<?= $id  ?>">
 	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
+		<div class="modal-content border-modal-content">
+			<div class="modal-header bg-orange border-modal-header">
 				<h5 class="modal-title">Detalhes da oferta</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>

@@ -119,7 +119,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 			</div>
 		</div>
 		<div class="col-12 col-md-4 text-center">
-			<img class="img-fluid mb-5" src="https://agro.agr.br/upload/banners/9fab2392f13a177fe8a9f9e10fbc0bb5_thumb.png" alt="Apoio">
+			<img class="img-fluid mb-5" src="<?= $url ?>/upload/banners/<?= $banner; ?>_thumb.png" alt="Apoio">
 		</div>
 	</div>
 	
@@ -289,7 +289,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 
 									<a data-toggle="modal" data-target="#modal-offer-<?= $id  ?>" href="#" class="mt-2 btn">Detalhes da oferta</a>
 									<div class="clearfix"></div>
-									<a target="_blank" href="https://<?= $offer->site_url ?>.agr.br"><?= $offer->site_url ?>.agr.br</a>
+									<a target="_blank" href="<?= $offer->site_url ?>"><?= str_replace("https://www.", "", $offer->site_url) ?></a>
 								</div>
 							</div>
 						</div>

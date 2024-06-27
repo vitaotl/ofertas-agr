@@ -1,3 +1,19 @@
+<?php
+	$site_name = "ofertas";
+	$url = 'https://www.agro.agr.br';
+	
+	$url_api = $url.'/api/site/'.str_replace('ç', 'c', $site_name) . "?" . http_build_query([ "ip" => $_SERVER["REMOTE_ADDR"], "ua" => $_SERVER['HTTP_USER_AGENT'] ]);
+	//echo $url_api;
+
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($curl, CURLOPT_URL, $url_api);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$response = curl_exec($curl); 
+	$site = json_decode($response, true);
+	$banner = $site['banners'];
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
