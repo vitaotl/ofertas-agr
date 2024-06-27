@@ -199,7 +199,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 							</div>
 						</div>
 						<div class="form-group">
-							<textarea name="obs" placeholder="Produtos com os quais trabalha (separados por vírgula, no maximo 20)" rows="4" class="form-control"></textarea>
+							<textarea name="obs" placeholder="Produtos com os quais trabalha (separados por vírgula, no maximo 20)." rows="4" class="form-control"></textarea>
 							<small class="text-center">Após aplicar as informações do produto, aplicar dados de contato</small>
 						</div>
 
