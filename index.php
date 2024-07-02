@@ -11,6 +11,9 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 
 ?>
 <style>
+	.badge {
+		border-radius: 5px;
+	}
 	.button-wpp {
 		background: #FF5722;
     width: max-content;
@@ -31,6 +34,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 	.badge-warning {
 		background-color: #FF5722 !important;
 		color: #FFFFFF;
+		border-radius: 4px;
 	}
 	.card {
 		width: 23%;
@@ -73,6 +77,45 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 		text-align: center;
 	}
 
+	.modal-header-custom {
+    background: rgb(255, 87, 34);
+    border-radius: 10px 25px 0 0;
+    border-bottom: none;
+	}
+
+	.modal-content-custom {
+    border-radius: 13px 30px 0 0;
+	}
+
+	.modal-title-custom {
+    color: #FFFFFF;
+    font-size: 1rem;
+	}
+
+	.ofertas-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 10px;
+	}
+	.ofertas {
+		border: 1px solid #eee;
+    border-radius: 5px 30px 0 0;
+		border-top: none;
+
+		width: 23%;
+	}
+
+	.ofertas:hover {
+		box-shadow: 5px 5px 6px #eee;
+	}
+
+	.ofertas-header {
+    padding: 5px 10px;
+		background-color: #ff57222b;
+    border-radius: inherit;
+	}
+
 	@media screen and (max-width: 1200px) {
 		.card {
 			width: 30%;
@@ -83,18 +126,25 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 	}
 
 	@media screen and (max-width: 1024px) {
-		.card {
+		.card, .ofertas {
 			width: 45%;
 		}
 	}
 
 	@media screen and (max-width: 768px) {
-		.card {
+		.ofertas-container {
+			justify-content: center;
+		}
+		.card, .ofertas {
 			width: 100%;
 		}
 	}
 
-	
+	@media screen and (max-width: 575px) {
+		.ofertas {
+			max-width: 320px;
+		}
+	}
 
 </style>
 
@@ -105,7 +155,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 			<p class="text-primary">Nesta página você pode verificar todas as ofertas da plataforma Agro e articular ótimos negócios.</p>
 			<p class="text-primary">Se você for produtor também terá a chance de ofertar seus produtos e ampliar suas vendas.</p>
 			<p class="button-wpp">
-				<a href="https://chat.whatsapp.com/Htgpvc1oP9U65JM0NlBaH7" target="_blank" class="btn btn-sm">
+				<a href="<?= $linkWhatsapp ?>" target="_blank" class="btn btn-sm">
 				Entre no grupo de Ofertas
 				</a>
 		  </p>
@@ -204,14 +254,14 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 						</div>
 
 						<div class="form-group text-right">
-							<a data-toggle="modal" data-target="#modal-password" class="btn btn-primary" href="#" >Continuar</a>
+							<a data-toggle="modal" data-target="#modal-password" class="btn btn-primary" href="#" style="background-color: rgb(50, 205, 50); border: none; border-radius: 4px">Continuar</a>
 						</div>
 					</fieldset>
 					<div class="modal fade" id="modal-password">
 						<div class="modal-dialog" style="width: 338px;">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title">Confirmar envio de oferta</h5>
+							<div class="modal-content modal-content-custom">
+								<div class="modal-header modal-header-custom">
+									<h5 class="modal-title modal-title-custom">Confirmar envio de oferta</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
@@ -352,37 +402,26 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 		} ?>
 
 		<div class="table-responsive mt-4" id="ofertas">
-			<table class="table table-sm">
-				<thead>
-					<tr>
-						<th></th>
-						<th>Produto/Tipo</th>
-						<th>Quantidade</th>
-						<th>Localidade</th>
-						<th>Site</th>
-						<th>Detalhes</th>
-						<th>Data</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php 
-					foreach($offers as $offer)
-					{
-						?>
-						<tr>
-							<td><span class="badge badge-<?= $offer->tipo_oferta[1]  ?>"><?= $offer->tipo_oferta[0]  ?></span> </td>
-							<td><strong><?= $offer->site ?></strong> <small><?= $offer->tipo ?></small></td>
-							<td><?= $offer->quantidade ?></td>
-							<td><?= $offer->cidade ?>/<?= $offer->estado ?></td>
-							<td><a href="https://<?= $offer->site_url ?>.agr.br"><strong><?= $offer->site_url ?>.agr.br</strong></a></td>
-							<td><a href="#" data-toggle="modal" data-target="#modal-offer-<?= $offer->id  ?>" class="btn btn-primary">Detalhes da oferta</a></td>
-							<td><?= date('d/m/Y', strtotime($offer->created_at)) ?></td>
-						</tr>
-						<?php
-					} ?>
-					
-				</tbody>
-			</table>
+		<div class="ofertas-container">
+    <?php foreach($offers as $offer): ?>
+        <div class="ofertas">
+                <div class="ofertas-header" style="<?= $offer->tipo_oferta[0] === 'Compra' ? 'background:#3addb487;' : '' ?>">
+                    <span class="badge badge-<?= $offer->tipo_oferta[1] ?>"><?= $offer->tipo_oferta[0] ?></span>
+                </div>
+                <div class="card-body" style="padding: 10px;">
+                    <h5 class="card-title"><?= $offer->site ?></h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><?= $offer->tipo ?></h6>
+                    <p class="card-text">
+                        <strong>Quantidade:</strong> <?= $offer->quantidade ?><br>
+                        <strong>Localidade:</strong> <?= $offer->cidade ?>/<?= $offer->estado ?><br>
+                        <strong>Site:</strong> <a href="<?= $offer->site_url ?>" target="_blank"><?= str_replace("https://www.","",$offer->site_url) ?></a><br>
+                        <strong>Data:</strong> <?= date('d/m/Y', strtotime($offer->created_at)) ?>
+                    </p>
+                    <a href="#" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" class="btn btn-primary" style="<?= $offer->tipo_oferta[0] === 'Compra' ? 'background-color: #033 !important;' : '' ?>">Detalhes da oferta</a>
+                </div>
+        </div>
+    <?php endforeach; ?>
+</div>
 		</div>
 	</fieldset>
 </div>

@@ -11,6 +11,7 @@
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	$response = curl_exec($curl); 
 	$site = json_decode($response, true);
+	$linkWhatsapp = $site['link_whatsapp'];
 	$banner = $site['banners'];
 ?>
 
