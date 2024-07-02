@@ -23,7 +23,7 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<title>Ofertas</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
-	<link rel="stylesheet" href="assets/css/lib/bootstrap.min.css">
+	<link rel="stylesheet" href="<?= $url ?>/assets/css/lib/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/css/main.css">
 	<link rel="shortcut icon" href="assets/img/ico.png" type="image/x-icon">
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">

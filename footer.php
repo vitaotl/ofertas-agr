@@ -8,8 +8,8 @@
 			</footer>
 
 
-			<script src="assets/js/lib/jquery-3.2.1.min.js"></script>
-			<script src="assets/js/lib/bootstrap.bundle.min.js"></script>
+			<script src="<?= $url ?>/assets/js/lib/jquery-3.2.1.min.js"></script>
+			<script src="<?= $url ?>/assets/js/lib/bootstrap.bundle.min.js"></script>
 			<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 			<script>
 				$.fn.button = function(action)

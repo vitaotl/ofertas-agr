@@ -1,4 +1,5 @@
 <?php include 'header.php'; 
+include 'translater.php';
 
 //define('URL_AGRO', 'http://localhost/agro');
 define('URL_AGRO', 'https://agro.agr.br');
@@ -36,7 +37,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 		color: #FFFFFF;
 		border-radius: 4px;
 	}
-	.card {
+	.card-ofertas-destaque {
 		width: 23%;
 		padding: 10px;
 
@@ -310,7 +311,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 
 					?>
 
-					<div class="card mb-4">
+					<div class="card card-ofertas-destaque mb-4">
 						<div class="d-flex align-items-center flex-column" style="gap: 10px">
 							<div class="w-100 d-flex justify-content-center">
 								<?php
@@ -337,7 +338,7 @@ $offers = json_decode(file_get_contents(URL_AGRO.'/api/get-offers?'.http_build_q
 									<h6 class="mb-1"><strong>Cidade:</strong> <?= $offer->cidade  ?></h6>
 									<h6 class="mb-1"><strong>Estado:</strong> <?= $offer->estado  ?></h6>
 
-									<a data-toggle="modal" data-target="#modal-offer-<?= $id  ?>" href="#" class="mt-2 btn">Detalhes da oferta</a>
+									<a data-toggle="modal" data-target="#modal-offer-<?= $offer->id  ?>" href="#" class="mt-2 btn">Detalhes da oferta</a>
 									<div class="clearfix"></div>
 									<a target="_blank" href="<?= $offer->site_url ?>"><?= str_replace("https://www.", "", $offer->site_url) ?></a>
 								</div>
