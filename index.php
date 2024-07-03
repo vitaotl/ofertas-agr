@@ -217,6 +217,8 @@ $offers = json_decode(file_get_contents(URL_AGRO . '/api/get-offers?' . http_bui
 	}
 </style>
 
+<script src="//code-sa1.jivosite.com/widget/58qBmSBq4c" async></script>
+
 <div class="container pt-5 pb-5">
 	<div class="row ">
 		<div class="col-sm-5">
