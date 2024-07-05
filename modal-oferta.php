@@ -92,19 +92,19 @@
 <div class="modal fade" tabindex="-1" id="modal-offer-<?= $offer->id  ?>" style>
 	<div class="modal-dialog modal-xl" style="">
 		<div class="modal-content m-0 p-0 border-modal-content">
-			<div class="modal-header m-0 p-2 align-items-center bg-orange border-modal-header">
+			<div class="modal-header m-0 p-2 align-items-center bg-orange border-modal-header" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#033 " : "" ?>">
 				<!-- Breadcrumb -->
 
 				<div aria-label="breadcrumb">
-					<ol class="breadcrumb bg-orange mb-0">
-						<li class="breadcrumb-item"><a href="#"><?= translateText('Página Inicial', 'pt') ?></a></li>
-						<li class="breadcrumb-item"><a href="#"><?= translateText($offer->tipo_oferta[0], 'pt') ?></a></li>
+					<ol class="breadcrumb bg-orange mb-0" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#033 " : "" ?>">
+						<li class="breadcrumb-item"><a href="#" style="<?= $offer->tipo_oferta[0] == "Compra" ? "color:#ececec80 " : "" ?>"><?= translateText('Página Inicial', 'pt') ?></a></li>
+						<li class="breadcrumb-item"><a href="#" style="<?= $offer->tipo_oferta[0] == "Compra" ? "color:#ececec80 " : "" ?>"><?= translateText($offer->tipo_oferta[0], 'pt') ?></a></li>
 						<li class="breadcrumb-item active" aria-current="page"><?= $offer->site ?></li>
 					</ol>
 				</div>
 
 				<button type="button" class="close mr-0" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+					<span aria-hidden="true" style="<?= $offer->tipo_oferta[0] == "Compra" ? "color: #FFFFFF " : "" ?>">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
