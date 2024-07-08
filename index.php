@@ -383,7 +383,7 @@ $offers = json_decode(file_get_contents(URL_AGRO . '/api/get-offers?' . http_bui
 								<?php
 								if ($offer->img) {
 								?>
-									<div class="offer-image" style=" background-image: url(<?= URL_AGRO . '/upload/fotos/' . $offer->img . '_thumb.png' ?>)"></div>
+									<div title="<?= $offer->site  ?>" data-toggle="modal" data-target="#modal-offer-<?= $offer->id  ?>" href="#" class="offer-image" style=" cursor:pointer; background-image: url(<?= URL_AGRO . '/upload/fotos/' . $offer->img . '_thumb.png' ?>)"></div>
 								<?php
 								} else {
 								?>
