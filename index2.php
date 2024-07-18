@@ -10,18 +10,6 @@ $offers_destak = json_decode(file_get_contents(URL_AGRO . '/api/get-offers/10/1'
 
 $offers = json_decode(file_get_contents(URL_AGRO . '/api/get-offers?' . http_build_query($_POST)));
 
-$show_offers = $offers;
-$buy_offers = [];
-$sell_offers = [];
-
-foreach ($offers as $offer) {
-	if ($offer->tipo_oferta[0] === 'Compra') {
-		$buy_offers[] = $offer;
-	} elseif ($offer->tipo_oferta[0] === 'Venda') {
-		$sell_offers[] = $offer;
-	}
-}
-
 ?>
 <style>
 	.badge {
@@ -93,10 +81,6 @@ foreach ($offers as $offer) {
 		border-radius: 5px;
 	}
 
-	.btn-compra {
-		background-color: #033 !important;
-	}
-
 	.card-body a {
 		width: 100%;
 		margin-bottom: 10px;
@@ -143,6 +127,10 @@ foreach ($offers as $offer) {
 		border-radius: inherit;
 	}
 
+	.item {
+		display: none;
+		/* Oculta todos os itens inicialmente */
+	}
 
 	.radio-container {
 		display: inline-block;
@@ -191,15 +179,6 @@ foreach ($offers as $offer) {
 		height: 8px;
 		border-radius: 50%;
 		background: white;
-	}
-
-	.prev-page, .next-page {
-		border-radius: 5px;
-	}
-
-	.prev-page {
-		background-color: #FF5722 !important;
-		border: none;
 	}
 
 	@media screen and (max-width: 1200px) {
@@ -494,7 +473,11 @@ foreach ($offers as $offer) {
 		</form>
 
 		<?php
-		foreach ($show_offers as $offer) {
+		$offers_per_page = 10;
+		$total_offers = count($offers);
+		$total_pages = ceil($total_offers / $offers_per_page);
+
+		foreach ($offers as $offer) {
 			$id = $offer->id = 'destak' . rand();
 
 			include 'modal-oferta.php';
@@ -502,8 +485,8 @@ foreach ($offers as $offer) {
 
 		<div class="table-responsive mt-4" id="ofertas">
 			<div class="ofertas-container">
-				<?php foreach ($show_offers as $offer) : ?>
-					<div class="item ofertas <?= $offer->tipo_oferta[0] ?>">
+				<?php foreach ($offers as $index => $offer) : ?>
+					<div class="offer item ofertas <?= $offer->tipo_oferta[0] ?>" data-page="<?= floor($index / $offers_per_page) + 1 ?>">
 						<div class="ofertas-header" style="<?= $offer->tipo_oferta[0] === 'Compra' ? 'background:#3addb487;' : '' ?>">
 							<span class="badge badge-<?= $offer->tipo_oferta[1] ?>"><?= $offer->tipo_oferta[0] ?></span>
 						</div>
@@ -521,130 +504,99 @@ foreach ($offers as $offer) {
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<div class="pagination-container mt-4 py-2 d-flex align-items-center justify-content-center" style="gap: 10px;">
-				<button class="prev-page btn btn-primary">Anterior</button>
-				<span class="page-info"></span>
-				<button class="next-page btn btn-primary">Próximo</button>
-			</div>
+			<nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#" id="prev-page">&laquo; Anterior</a></li>
+            <?php for ($page = 1; $page <= $total_pages; $page++): ?>
+                <li class="page-item"><a class="page-link" href="#" data-page="<?= $page ?>"><?= $page ?></a></li>
+            <?php endfor; ?>
+            <li class="page-item"><a class="page-link" href="#" id="next-page">Próximo &raquo;</a></li>
+        </ul>
+    </nav>
 		</div>
 	</fieldset>
 </div>
 
 <script>
-	document.addEventListener('DOMContentLoaded', function() {
-		var currentPage = 1;
-		var itemsPerPage = 12;
-		var allOffers = <?= json_encode($offers) ?>;
-		var buyOffers = <?= json_encode($buy_offers) ?>;
-		var sellOffers = <?= json_encode($sell_offers) ?>;
+	document.addEventListener('DOMContentLoaded', () => {
+		const radios = document.querySelectorAll('input[name="filter"]');
+		const items = document.querySelectorAll('.item');
 
-		function displayOffers(offers, page) {
-			var container = document.querySelector('.ofertas-container');
-			container.innerHTML = ''; // Limpa as ofertas atuais
+		// Função para atualizar a exibição dos itens
+		const updateDisplay = () => {
+			const checked = document.querySelector('input[name="filter"]:checked').value;
+			items.forEach(item => {
+				item.style.display = (checked === 'all' || item.classList.contains(checked)) ? 'block' : 'none';
+			});
+		};
 
-			var start = (page - 1) * itemsPerPage;
-			var end = start + itemsPerPage;
-			var paginatedOffers = offers.slice(start, end);
+		// Adiciona o evento de mudança em todos os radio buttons
+		radios.forEach(radio => {
+			radio.addEventListener('change', updateDisplay);
+		});
 
-			paginatedOffers.forEach(function(offer) {
-				var offerDiv = document.createElement('div');
-				offerDiv.classList.add('item', 'ofertas', offer.tipo_oferta[0]);
+		// Atualiza a exibição inicial dos itens
+		updateDisplay();
 
-				var headerDiv = document.createElement('div');
-				headerDiv.classList.add('ofertas-header');
-				if (offer.tipo_oferta[0] === 'Compra') {
-					headerDiv.style.background = '#3addb487';
+		let currentPage = 1;
+		const offersPerPage = <?= $offers_per_page ?>;
+		const totalOffers = <?= $total_offers ?>;
+		const totalPages = <?= $total_pages ?>;
+		const paginationLinks = document.querySelectorAll('.pagination .page-link');
+
+		function showPage(page) {
+			const offers = document.querySelectorAll('.offer');
+			offers.forEach(offer => {
+				offer.style.display = 'none';
+			});
+			offers.forEach(offer => {
+				if (parseInt(offer.dataset.page) === page) {
+					offer.style.display = 'block';
 				}
-				headerDiv.innerHTML = '<span class="badge badge-' + offer.tipo_oferta[1] + '">' + offer.tipo_oferta[0] + '</span>';
-
-				var cardBodyDiv = document.createElement('div');
-				cardBodyDiv.classList.add('card-body');
-				cardBodyDiv.style.padding = '10px';
-
-				var title = document.createElement('h5');
-				title.classList.add('card-title');
-				title.textContent = offer.site;
-
-				var subtitle = document.createElement('h6');
-				subtitle.classList.add('card-subtitle', 'mb-2', 'text-muted');
-				subtitle.textContent = offer.tipo;
-
-				var text = document.createElement('p');
-				text.classList.add('card-text');
-				text.innerHTML = '<strong>Quantidade:</strong> ' + offer.quantidade + '<br>' +
-					'<strong>Localidade:</strong> ' + offer.cidade + '/' + offer.estado + '<br>' +
-					'<strong>Site:</strong> <a href="' + offer.site_url + '" target="_blank">' + offer.site_url.replace("https://www.", "") + '</a><br>' +
-					'<strong>Data:</strong> ' + new Date(offer.created_at).toLocaleDateString('pt-BR');
-
-				var detailsLink = document.createElement('a');
-				detailsLink.href = '#';
-				detailsLink.dataset.toggle = 'modal';
-				detailsLink.dataset.target = '#modal-offer-' + offer.id;
-				detailsLink.classList.add('btn', 'btn-primary');
-				if (offer.tipo_oferta[0] === 'Compra') {
-					detailsLink.classList.add('btn-compra');
-				}
-				detailsLink.textContent = 'Detalhes da oferta';
-
-				cardBodyDiv.appendChild(title);
-				cardBodyDiv.appendChild(subtitle);
-				cardBodyDiv.appendChild(text);
-				cardBodyDiv.appendChild(detailsLink);
-
-				offerDiv.appendChild(headerDiv);
-				offerDiv.appendChild(cardBodyDiv);
-
-				container.appendChild(offerDiv);
 			});
 
-			updatePageInfo(offers.length, page);
+			currentPage = page;
+			updatePaginationLinks();
 		}
 
-		function updatePageInfo(totalItems, page) {
-			var pageInfo = document.querySelector('.page-info');
-			var totalPages = Math.ceil(totalItems / itemsPerPage);
-			pageInfo.textContent = 'Página ' + page + ' de ' + totalPages;
-
-			document.querySelector('.prev-page').disabled = (page === 1);
-			document.querySelector('.next-page').disabled = (page === totalPages);
+		function updatePaginationLinks() {
+			paginationLinks.forEach(link => {
+				const page = parseInt(link.dataset.page);
+				if (page === currentPage) {
+					link.parentElement.classList.add('active');
+				} else {
+					link.parentElement.classList.remove('active');
+				}
+			});
 		}
 
-		function changePage(increment) {
-			currentPage += increment;
-			var filterValue = document.querySelector('input[name="filter"]:checked').value;
-			var offers = filterValue === 'Venda' ? sellOffers : filterValue === 'Compra' ? buyOffers : allOffers;
-			displayOffers(offers, currentPage);
-		}
-
-		document.querySelector('.prev-page').addEventListener('click', function() {
+		document.querySelector('#prev-page').addEventListener('click', function(e) {
+			e.preventDefault();
 			if (currentPage > 1) {
-				changePage(-1);
+				showPage(currentPage - 1);
 			}
 		});
 
-		document.querySelector('.next-page').addEventListener('click', function() {
-			var filterValue = document.querySelector('input[name="filter"]:checked').value;
-			var offers = filterValue === 'Venda' ? sellOffers : filterValue === 'Compra' ? buyOffers : allOffers;
-			var totalPages = Math.ceil(offers.length / itemsPerPage);
+		document.querySelector('#next-page').addEventListener('click', function(e) {
+			e.preventDefault();
 			if (currentPage < totalPages) {
-				changePage(1);
+				showPage(currentPage + 1);
 			}
 		});
 
-		document.querySelectorAll('input[name="filter"]').forEach(function(radio) {
-			radio.addEventListener('change', function() {
-				currentPage = 1;
-				var filterValue = this.value;
-				var offers = filterValue === 'Venda' ? sellOffers : filterValue === 'Compra' ? buyOffers : allOffers;
-				displayOffers(offers, currentPage);
+		paginationLinks.forEach(link => {
+			link.addEventListener('click', function(e) {
+				e.preventDefault();
+				const page = parseInt(this.dataset.page);
+				if (page) {
+					showPage(page);
+				}
 			});
 		});
 
-		// Inicializa com todas as ofertas
-		displayOffers(allOffers, currentPage);
-	});
-</script>
+		showPage(1); // Mostrar a primeira página por padrão
 
+	});
 </script>
 
 <?php include 'footer.php'; ?>
