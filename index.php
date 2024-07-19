@@ -6,7 +6,7 @@ define('URL_AGRO', 'https://agro.agr.br');
 
 $sites = json_decode(file_get_contents(URL_AGRO . '/api/get-sites'));
 
-$offers_destak = json_decode(file_get_contents(URL_AGRO . '/api/get-offers/10/1'));
+$offers_destak = json_decode(file_get_contents(URL_AGRO . '/api/get-offers/12/1'));
 
 $offers = json_decode(file_get_contents(URL_AGRO . '/api/get-offers?' . http_build_query($_POST)));
 
@@ -517,6 +517,7 @@ foreach ($offers as $offer) {
 								<strong>Data:</strong> <?= date('d/m/Y', strtotime($offer->created_at)) ?>
 							</p>
 							<a href="#" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" class="btn btn-primary" style="<?= $offer->tipo_oferta[0] === 'Compra' ? 'background-color: #033 !important;' : '' ?>">Detalhes da oferta</a>
+							<a href="<?= $offer->site_url ?>" target="_blank"><?= str_replace("https://www.", "", $offer->site_url) ?></a>
 						</div>
 					</div>
 				<?php endforeach; ?>
@@ -585,11 +586,17 @@ foreach ($offers as $offer) {
 					detailsLink.classList.add('btn-compra');
 				}
 				detailsLink.textContent = 'Detalhes da oferta';
+				
+				var urlLink = document.createElement('a');
+				urlLink.href = offer.site_url;
+				urlLink.target = "_blank";
+				urlLink.textContent = offer.site_url.replace("https://www.", "");
 
 				cardBodyDiv.appendChild(title);
 				cardBodyDiv.appendChild(subtitle);
 				cardBodyDiv.appendChild(text);
 				cardBodyDiv.appendChild(detailsLink);
+				cardBodyDiv.appendChild(urlLink);
 
 				offerDiv.appendChild(headerDiv);
 				offerDiv.appendChild(cardBodyDiv);
