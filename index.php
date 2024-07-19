@@ -193,11 +193,15 @@ foreach ($offers as $offer) {
 		background: white;
 	}
 
-	.prev-page, .next-page {
+	.prev-page,
+	.next-page,
+	.prev-page2,
+	.next-page2 {
 		border-radius: 5px;
 	}
 
-	.prev-page {
+	.prev-page,
+	.prev-page2 {
 		background-color: #FF5722 !important;
 		border: none;
 	}
@@ -386,51 +390,22 @@ foreach ($offers as $offer) {
 			<iframe class="col-lg-6" width="100%" height="315" src="https://www.youtube.com/embed/NzBZpXhl-PQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 		</div>
 
+		<?php
+		foreach ($offers_destak as $offer) {
+			$id = $offer->id;
+			include 'modal-oferta.php';
+		?><?php } ?>
 
 		<div class="col-12">
-			<h2 class="py-1 mb-0 text-center" style="background-color: #FF5722; border-radius: 10px 30px 0 0; color: #FFFFFF "><strong>Ofertas em destaque</strong></h2>
-			<div class="d-flex flex-wrap justify-content-start mt-2" style="gap: 20px">
-				<?php
-				foreach ($offers_destak as $offer) {
-					$id = rand();
+			<h2 id="ofertas-em-destaque" class="py-1 mb-0 text-center" style="background-color: #FF5722; border-radius: 10px 30px 0 0; color: #FFFFFF "><strong>Ofertas em destaque</strong></h2>
+			<div id="offersContainer" class="d-flex flex-wrap justify-content-start mt-2" style="gap: 20px">
+				<!-- Itens de oferta serão inseridos aqui via JavaScript -->
+			</div>
 
-					include 'modal-oferta.php';
-
-				?>
-
-					<div class="card card-ofertas-destaque mb-4">
-						<div class="d-flex align-items-center flex-column" style="gap: 10px">
-							<div class="w-100 d-flex justify-content-center">
-								<?php
-								if ($offer->img) {
-								?>
-									<div title="<?= $offer->site  ?>" data-toggle="modal" data-target="#modal-offer-<?= $offer->id  ?>" href="#" class="offer-image" style=" cursor:pointer; background-image: url(<?= URL_AGRO . '/upload/fotos/' . $offer->img . '_thumb.png' ?>)"></div>
-								<?php
-								} else {
-								?>
-									<div class="text-center text-muted offer-image">Sem imagem</div>
-								<?php
-								} ?>
-							</div>
-							<hr class="w-100 my-1">
-							<div class="w-100">
-								<div class="card-body p-0">
-									<span class="badge badge-<?= $offer->tipo_oferta[1]  ?>"><?= $offer->tipo_oferta[0]  ?></span>
-									<h6 class="mb-1"><strong>Produto:</strong> <?= $offer->site  ?></h6>
-									<h6 class="mb-1"><strong>Tipo:</strong> <?= $offer->tipo  ?></h6>
-									<h6 class="mb-1"><strong>Quantidade:</strong> <?= $offer->quantidade  ?></h6>
-									<h6 class="mb-1"><strong>Cidade:</strong> <?= $offer->cidade  ?></h6>
-									<h6 class="mb-1"><strong>Estado:</strong> <?= $offer->estado  ?></h6>
-
-									<a data-toggle="modal" data-target="#modal-offer-<?= $offer->id  ?>" href="#" class="mt-2 btn">Detalhes da oferta</a>
-									<div class="clearfix"></div>
-									<a target="_blank" href="<?= $offer->site_url ?>"><?= str_replace("https://www.", "", $offer->site_url) ?></a>
-								</div>
-							</div>
-						</div>
-					</div>
-				<?php
-				} ?>
+			<div class="pagination-container mt-4 py-2 d-flex align-items-center justify-content-center" style="gap: 10px;">
+				<button class="prev-page2 btn btn-primary">Anterior</button>
+				<span class="page-info2"></span>
+				<button class="next-page2 btn btn-primary">Próximo</button>
 			</div>
 		</div>
 
@@ -495,7 +470,7 @@ foreach ($offers as $offer) {
 
 		<?php
 		foreach ($show_offers as $offer) {
-			$id = $offer->id = 'destak' . rand();
+			$id = $offer->id;
 
 			include 'modal-oferta.php';
 		} ?>
@@ -533,6 +508,89 @@ foreach ($offers as $offer) {
 
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
+		const offers = <?php echo json_encode($offers_destak); ?>;
+		const itemsPerPage2 = 12;
+		let currentPage2 = 1;
+		const offersContainer = document.getElementById('offersContainer');
+		const pageInfoContainer = document.querySelector('.page-info2');
+		const prevPageButton = document.querySelector('.prev-page2');
+		const nextPageButton = document.querySelector('.next-page2');
+		const ofertasEmDestaque = document.getElementById('ofertas-em-destaque');
+
+		function displayOffers2(page) {
+			offersContainer.innerHTML = '';
+			const start = (page - 1) * itemsPerPage2;
+			const end = start + itemsPerPage2;
+			const paginatedOffers = offers.slice(start, end);
+
+			paginatedOffers.forEach(offer => {
+				const offerElement = createOfferElement(offer);
+				offersContainer.appendChild(offerElement);
+			});
+
+			updatePageInfo2(page);
+			updateButtonsState(page);
+			ofertasEmDestaque.scrollIntoView({
+				behavior: 'smooth'
+			});
+		}
+
+		function createOfferElement(offer) {
+			const div = document.createElement('div');
+			div.className = 'card card-ofertas-destaque mb-4';
+			div.innerHTML = `
+        <div class="d-flex align-items-center flex-column" style="gap: 10px">
+          <div class="w-100 d-flex justify-content-center">
+            ${offer.img ? `<div title="${offer.site}" data-toggle="modal" data-target="#modal-offer-${offer.id}" class="offer-image" style="cursor:pointer; background-image: url(https://agro.agr.br/upload/fotos/${offer.img}_thumb.png)"></div>` : '<div class="text-center text-muted offer-image">Sem imagem</div>'}
+          </div>
+          <hr class="w-100 my-1">
+          <div class="w-100">
+            <div class="card-body p-0">
+              <span class="badge badge-${offer.tipo_oferta[1]}">${offer.tipo_oferta[0]}</span>
+              <h6 class="mb-1"><strong>Produto:</strong> ${offer.site}</h6>
+              <h6 class="mb-1"><strong>Tipo:</strong> ${offer.tipo}</h6>
+              <h6 class="mb-1"><strong>Quantidade:</strong> ${offer.quantidade}</h6>
+              <h6 class="mb-1"><strong>Cidade:</strong> ${offer.cidade}</h6>
+              <h6 class="mb-1"><strong>Estado:</strong> ${offer.estado}</h6>
+              <a data-toggle="modal" data-target="#modal-offer-${offer.id}" href="#" class="mt-2 btn">Detalhes da oferta</a>
+              <div class="clearfix"></div>
+              <a target="_blank" href="${offer.site_url}">${offer.site_url.replace('https://www.', '')}</a>
+            </div>
+          </div>
+        </div>
+      `;
+			return div;
+		}
+
+		function updatePageInfo2(page) {
+			const pageCount = Math.ceil(offers.length / itemsPerPage2);
+			pageInfoContainer.innerText = `Página ${page} de ${pageCount}`;
+		}
+
+		function updateButtonsState(page) {
+			const pageCount = Math.ceil(offers.length / itemsPerPage2);
+			prevPageButton.disabled = page <= 1;
+			nextPageButton.disabled = page >= pageCount;
+		}
+
+		prevPageButton.addEventListener('click', function() {
+			if (currentPage2 > 1) {
+				currentPage2--;
+				displayOffers2(currentPage2);
+			}
+		});
+
+		nextPageButton.addEventListener('click', function() {
+			const pageCount = Math.ceil(offers.length / itemsPerPage2);
+			if (currentPage2 < pageCount) {
+				currentPage2++;
+				displayOffers2(currentPage2);
+			}
+		});
+
+		displayOffers2(currentPage2);
+
+
 		var currentPage = 1;
 		var itemsPerPage = 12;
 		var allOffers = <?= json_encode($offers) ?>;
@@ -586,7 +644,7 @@ foreach ($offers as $offer) {
 					detailsLink.classList.add('btn-compra');
 				}
 				detailsLink.textContent = 'Detalhes da oferta';
-				
+
 				var urlLink = document.createElement('a');
 				urlLink.href = offer.site_url;
 				urlLink.target = "_blank";
