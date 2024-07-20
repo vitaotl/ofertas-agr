@@ -6,7 +6,7 @@ define('URL_AGRO', 'https://agro.agr.br');
 
 $sites = json_decode(file_get_contents(URL_AGRO . '/api/get-sites'));
 
-$offers_destak = json_decode(file_get_contents(URL_AGRO . '/api/get-offers/12/1'));
+$offers_destak = json_decode(file_get_contents(URL_AGRO . '/api/get-offers/200/1'));
 
 $offers = json_decode(file_get_contents(URL_AGRO . '/api/get-offers?' . http_build_query($_POST)));
 
