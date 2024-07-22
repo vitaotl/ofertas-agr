@@ -1,6 +1,6 @@
 			<footer class="bg-primary pt-1 pb-1">
 				<div class="container text-center text-white">
-					<img class="mt-4" src="ico.png" alt="Agro">
+					<img class="mt-4" src="assets/img/ico.png" alt="Agro">
 					<p class="mt-2 mb-0"><B>Ofertas</B> um site da Agro.agr.br</p>
 					<p class="m-0">Conectando produtores e compradores desde 2000.</p>
 					<p class="m-0 mb-3">&copy; 2000 - <?=date("Y")?> Copyright: Todos os direitos reservados.</p>

@@ -83,6 +83,9 @@
 						<a style="padding:15px;" class="nav-link" href="https://www.fornecedores.agr.br"> Fornecedores</a>
 					</li>
 					<li class="nav-item">
+						<a style="padding:15px;" class="nav-link" href="https://contratos.agr.br"> Contratos</a>
+					</li>
+					<li class="nav-item">
 						<a style="padding:15px;" class="nav-link" href="https://www.agro.agr.br/admin"> Login</a>
 					</li>
 				</ul>
